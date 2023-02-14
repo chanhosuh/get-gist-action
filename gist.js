@@ -27,24 +27,24 @@ https.get(`https://api.github.com/gists/${gistID}`, options, (resp) => {
 
   resp.on('end', () => {
     console.log('Gotten gist successfully from GitHub.')
-    let parsed = JSON.parse(data);
+    const parsed = JSON.parse(data);
     if (!parsed.files) {
         console.log("Error: not a successful response.");
         process.exit(1)
-        return;
     }
-    let files = Object.values(parsed.files);
+    const files = Object.values(parsed.files);
     if (files.length != 1) {
         console.log("Error: looking for one and only one file.");
         process.exit(1)
-        return;
     }
-    let file = files[0];
-    fs.writeFile(`/tmp/${file['filename']}`, file['content'],
+    const file = files[0];
+    const filepath = `/tmp/${file['filename']}`
+    fs.writeFile(filepath, file['content'],
     function(err) {
         if (err) throw err;
-        console.log(`Gist is written to /tmp/${file['filename']} successfully.`);
-        process.stdout.write(`::set-output name=file::/tmp/${file['filename']}`);
+        console.log(`Gist is written to ${filepath} successfully.`);
+        const env_filepath = process.env.GITHUB_OUTPUT
+        fs.appendFileSync(env_filepath, `file=${filepath}`)
     });
   });
 
