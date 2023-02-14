@@ -7,7 +7,7 @@ outputs:
   file:
     description: 'The filename containing the gist'
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'gist.js'
 branding:
   icon: 'align-center'
